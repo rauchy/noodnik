@@ -17,9 +17,9 @@ module Noodnik
 			topic = params[:topic]
 
       if user_id.present?
-			  attr = { user_id: user_id, topic: topic }
-				nag = Nag.find :first, conditions: attr
-				nag.update_attribute :completed, true
+				nag = find_or_create_nag(topic)
+				nag.completed = true
+				nag.save
 			end
 
 			render :nothing => true
