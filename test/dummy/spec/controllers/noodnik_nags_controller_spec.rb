@@ -22,6 +22,10 @@ describe Noodnik::NagsController do
         @attr.merge! period: 2.weeks, topic: @topic
       end
 
+      after :each do
+        Noodnik::Nag.delete_all
+      end
+
       describe "for the first time" do
         it "should create a nag" do
           lambda do
@@ -40,13 +44,26 @@ describe Noodnik::NagsController do
         end
 
         it "should set the next nag time correctly" do
-          t = Time.parse("01/01/2010 10:00")
-          Time.stub!(:now).and_return(t)
-
+          stub_time
           get :postpone, @attr
           Noodnik::Nag.last.next_nag.should == 2.weeks.from_now
         end
       end
+
+      describe "not for the first time" do
+        it "should modify the next nag time correctly" do
+          nag = Noodnik::Nag.create! user_id: 1, topic: @topic
+
+          stub_time
+          get :postpone, @attr
+          nag.reload.next_nag.should == 2.weeks.from_now
+        end
+      end
     end
+  end
+
+  def stub_time
+    t = Time.parse("01/01/2010 10:00")
+    Time.stub!(:now).and_return(t)
   end
 end

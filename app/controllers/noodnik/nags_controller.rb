@@ -5,7 +5,9 @@ module Noodnik
 			topic = params[:topic]
 
 			if user_id.present?
-				Nag.create! user_id: user_id, topic: topic, next_nag: next_nag
+				nag = find_or_create_nag(topic)
+				nag.next_nag = next_nag
+				nag.save
 			end
 
 			render :nothing => true
@@ -18,8 +20,16 @@ module Noodnik
 		private
 
 		def user_id
-		  Noodnik.current_user_id.call
+			Noodnik.current_user_id.call
 		end
 
+		def find_or_create_nag(topic)
+			attr = { user_id: user_id, topic: topic }
+			if Nag.exists? attr
+				Nag.find :first, conditions: attr
+			else
+				Nag.new attr	
+			end
+		end
 	end
 end
