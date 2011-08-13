@@ -2,9 +2,10 @@ module Noodnik
 	class NagsController < ApplicationController
 		def postpone
 			next_nag = params[:period].to_i.from_now
+			topic = params[:topic]
 
 			if user_id.present?
-				Nag.create! next_nag: next_nag, user_id: user_id
+				Nag.create! user_id: user_id, topic: topic, next_nag: next_nag
 			end
 
 			render :nothing => true
