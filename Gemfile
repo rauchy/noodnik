@@ -11,6 +11,7 @@ group :test do
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'spork', '~> 0.9.0.rc'
 end
 
 gem 'jquery-rails'

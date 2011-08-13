@@ -1,6 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    ZenTest (4.6.1)
     actionmailer (3.1.0.rc5)
       actionpack (= 3.1.0.rc5)
       mail (~> 2.3.0)
@@ -31,6 +32,8 @@ GEM
     activesupport (3.1.0.rc5)
       multi_json (~> 1.0)
     arel (2.1.4)
+    autotest (4.4.6)
+      ZenTest (>= 4.4.1)
     bcrypt-ruby (2.1.4)
     builder (3.0.0)
     database_cleaner (0.6.7)
@@ -91,6 +94,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.6.0)
+    spork (0.9.0.rc9)
     sprockets (2.0.0.beta.13)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -107,9 +111,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autotest
   database_cleaner
   factory_girl_rails
   jquery-rails
   rails (= 3.1.0.rc5)
   rspec-rails
+  spork (~> 0.9.0.rc)
   sqlite3
