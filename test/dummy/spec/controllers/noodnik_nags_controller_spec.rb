@@ -10,12 +10,45 @@ describe Noodnik::NagsController do
     end
   end
 
+  describe "when not signed in" do
+    before :each do
+      set_current_user_id(nil)
+    end
+
+    describe "GET 'postpone'" do
+      before :each do
+        @attr.merge! period: 2.weeks
+      end
+
+      after :each do
+        cookies.clear
+      end
+
+      describe "for the first time" do
+        before :each do
+          stub_time
+          get :postpone, @attr
+        end
+
+        it "creates a cookie" do
+          cookies.count.should == 1
+        end
+
+        it "sets the provided topic as the cookie name" do
+          cookies.should be_include(@topic)
+        end
+
+        it "sets the next nag time correctly" do
+          cookies[@topic].should == 2.weeks.from_now.to_s
+        end
+      end
+    end
+  end
+
   describe "when signed in" do
     before :each do
       @user_id = 1
-      Noodnik.setup do |config|
-        config.current_user_id = lambda { @user_id }
-      end
+      set_current_user_id(@user_id)
     end
 
     describe "GET 'postpone'" do
@@ -28,7 +61,7 @@ describe Noodnik::NagsController do
       end
 
       describe "for the first time" do
-        it "creates a nag" do
+        it "creates a nag instance" do
           lambda do
             get :postpone, @attr
           end.should change(Noodnik::Nag, :count).by(1)
@@ -68,6 +101,12 @@ describe Noodnik::NagsController do
         get :complete, @attr
         nag.reload.completed.should be_true
       end
+    end
+  end
+
+  def set_current_user_id(user_id)
+    Noodnik.setup do |config|
+      config.current_user_id = lambda { user_id }
     end
   end
 

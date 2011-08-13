@@ -8,6 +8,8 @@ module Noodnik
 				nag = find_or_create_nag(topic)
 				nag.next_nag = next_nag
 				nag.save
+			else
+				cookies[topic] = next_nag
 			end
 
 			render :nothing => true
