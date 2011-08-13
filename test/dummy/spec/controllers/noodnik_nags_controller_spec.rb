@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe Noodnik::NagsController do
   before :each do 
-    @attr = {use_route: :noodnik}
+    @topic = :complete_your_registration
+    @attr = {use_route: :noodnik, topic: @topic}
+
     Noodnik.setup do |config|
       config.current_user_id = lambda { nil }
     end
@@ -18,8 +20,7 @@ describe Noodnik::NagsController do
 
     describe "GET 'postpone'" do
       before :each do
-        @topic = :complete_your_registration
-        @attr.merge! period: 2.weeks, topic: @topic
+        @attr.merge! period: 2.weeks
       end
 
       after :each do
@@ -27,23 +28,23 @@ describe Noodnik::NagsController do
       end
 
       describe "for the first time" do
-        it "should create a nag" do
+        it "creates a nag" do
           lambda do
             get :postpone, @attr
           end.should change(Noodnik::Nag, :count).by(1)
         end
 
-        it "should associate it with the correct user id" do
+        it "sets the correct user id" do
           get :postpone, @attr
           Noodnik::Nag.last.user_id.should == @user_id
         end
 
-        it "should set the provided topic" do
+        it "sets the provided topic" do
           get :postpone, @attr
           Noodnik::Nag.last.topic.should == @topic.to_s
         end
 
-        it "should set the next nag time correctly" do
+        it "sets the next nag time correctly" do
           stub_time
           get :postpone, @attr
           Noodnik::Nag.last.next_nag.should == 2.weeks.from_now
@@ -51,13 +52,21 @@ describe Noodnik::NagsController do
       end
 
       describe "not for the first time" do
-        it "should modify the next nag time correctly" do
+        it "modifies the next nag time correctly" do
           nag = Noodnik::Nag.create! user_id: 1, topic: @topic
 
           stub_time
           get :postpone, @attr
           nag.reload.next_nag.should == 2.weeks.from_now
         end
+      end
+    end
+
+    describe "GET 'complete'" do
+      it "marks the nag as complete" do
+        nag = Noodnik::Nag.create! user_id: 1, topic: @topic
+        get :complete, @attr
+        nag.reload.completed.should be_true
       end
     end
   end
