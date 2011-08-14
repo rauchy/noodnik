@@ -1,4 +1,5 @@
 require "noodnik/engine"
+require "noodnik/railtie"
 
 module Noodnik
 	mattr_accessor :current_user_id
