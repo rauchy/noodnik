@@ -1,0 +1,3 @@
+Autotest.add_hook :initialize do |at|
+  %w{./db/test.sqlite3 db/test.sqlite3 .git ./.git log/test.log ./log/test.log}.each {|exception| at.add_exception(exception)}
+end

@@ -8,6 +8,7 @@ gem 'rails', '3.1.0.rc5'
 gem 'sqlite3'
 
 group :test do
+  gem 'ZenTest', '4.6.0'
   gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
