@@ -12,6 +12,8 @@ describe Noodnik::NagsController do
 
   describe "when not signed in" do
     before :each do
+      @cookies = mock('cookies')
+      controller.stub!(:cookies).and_return(@cookies)
       set_current_user_id(nil)
     end
 
@@ -24,23 +26,26 @@ describe Noodnik::NagsController do
         cookies.clear
       end
 
-      describe "for the first time" do
-        before :each do
-          stub_time
-          get :postpone, @attr
-        end
+      it "creates a cookie" do
+        @cookies.should_receive(:[]=)
+        get :postpone, @attr
+      end
 
-        it "creates a cookie" do
-          cookies.count.should == 1
-        end
+      it "sets the provided topic as the cookie name" do
+        @cookies.should_receive(:[]=).with(@topic.to_s, anything)
+        get :postpone, @attr
+      end
 
-        it "sets the provided topic as the cookie name" do
-          cookies.should be_include(@topic)
-        end
+      it "sets the next nag time correctly" do
+        @cookies.should_receive(:[]=).with(anything, 2.weeks.from_now.to_s)
+        get :postpone, @attr
+      end
+    end
 
-        it "sets the next nag time correctly" do
-          cookies[@topic].should == 2.weeks.from_now.to_s
-        end
+    describe "GET 'complete'" do
+      it "removes the nag cookie" do
+        @cookies.should_receive(:delete).with(@topic.to_s)
+        get :complete, @attr
       end
     end
   end
@@ -61,25 +66,24 @@ describe Noodnik::NagsController do
       end
 
       describe "for the first time" do
+        before :each do
+          stub_time
+          get :postpone, @attr
+        end
+
         it "creates a nag instance" do
-          lambda do
-            get :postpone, @attr
-          end.should change(Noodnik::Nag, :count).by(1)
+          Noodnik::Nag.count.should == 1
         end
 
         it "sets the correct user id" do
-          get :postpone, @attr
           Noodnik::Nag.last.user_id.should == @user_id
         end
 
         it "sets the provided topic" do
-          get :postpone, @attr
           Noodnik::Nag.last.topic.should == @topic.to_s
         end
 
         it "sets the next nag time correctly" do
-          stub_time
-          get :postpone, @attr
           Noodnik::Nag.last.next_nag.should == 2.weeks.from_now
         end
       end
