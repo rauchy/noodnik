@@ -1,6 +1,6 @@
 Noodnik::Engine.routes.draw do
-  get "nags/postpone"
+  get "postpone" => "nags#postpone"
 
-  get "nags/complete"
+  get "complete" => "nags#complete"
 
 end
