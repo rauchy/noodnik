@@ -4,3 +4,7 @@
   <p>(<strong><%= postpone_for 5.seconds %></strong>)</p> <br />
 <% end %>
 <%= link_to  'This should always appear', 'http://www.google.com' %>
+
+<%= nag_user_to :update_profile do %>
+    You still need to <%= link_to 'update your profile', '/profiles/update' %>!
+  <% end %>

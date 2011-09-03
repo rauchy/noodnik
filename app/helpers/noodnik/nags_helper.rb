@@ -29,7 +29,6 @@ module Noodnik
 		def my_custom_link_to(*args)
 			has_options = args.last.is_a? Hash
 			html_options = has_options ? args.last : {}
-			html_options["data-noodnik-topic"] = @noodnik_topic
 			html_options["data-noodnik-complete-path"] = noodnik.routes.url_helpers.complete_path(topic: @noodnik_topic)
 			
 			if html_options.include? :class
