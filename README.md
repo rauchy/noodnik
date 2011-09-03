@@ -6,6 +6,12 @@ This gem is a simple solution that allows you to remind your users to do things 
 
 ## Examples
 
+1. In your Gemfile, add this line: ```gem 'noodnik'```
+2. ```$ bundle install```
+3. ```$ rake noodnik:install:migrations```
+4. ```$ rake db:migrate```
+5. Add noodnik.rb in your initializers directory (TODO!)
+
 ### A Quick Nagging Example
 
     <%= nag_user_to :update_profile do %>
