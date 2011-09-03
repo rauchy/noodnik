@@ -1,1 +1,9 @@
-Welcome!
+<%= @noodnik_topic %>
+<% nag_user_to :go_home do %>
+  plain text: hello! <br />
+  variable: <%= @noodnik_topic %> <br />
+postpone_for: <%= postpone_for 15.seconds %> <br />
+link_to: <%= link_to 'Google', 'www.google.com' %> <br />
+<% end %>
+<%= @noodnik_topic %>
+<%= link_to 'I AM NORMAL LINK', 'www.cnet.com' %>

@@ -44,12 +44,10 @@ describe Noodnik::NagsHelper do
   end
 
   describe "postpone_for" do
-    # TODO - move this to a spec for testing Context
-	  include Rails.application.routes.mounted_helpers  
-
     before :each do
-      nag_context = Context.new(:register, helper, noodnik.routes.url_helpers)
-      @link = nag_context.postpone_for 14.days
+      @link = nag_user_to :register do
+        postpone_for 14.days
+      end
     end
     
     it "prompts a default message of 'Remind me in 14 days'" do
