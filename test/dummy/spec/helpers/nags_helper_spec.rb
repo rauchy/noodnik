@@ -19,10 +19,16 @@ describe Noodnik::NagsHelper do
         Noodnik::Nag.delete_all
       end
 
+      it "yields the block in a div with class 'noodnik-nag'" do
+        helper.nag_user_to :register do |nag|
+          "I should be in a <div>!"
+        end.should match(%r[<div class="noodnik-nag">.*</div>])
+      end
+
       it "should yield the block for a new topic" do
         helper.nag_user_to :register do |nag|
           "Register!"
-        end.should eq("Register!")
+        end.should include("Register!")
       end
 
       it "should not yield the block if postponed" do
@@ -38,7 +44,7 @@ describe Noodnik::NagsHelper do
 
         helper.nag_user_to :register do |nag|
           "Register!"
-        end.should eq("Register!")
+        end.should include("Register!")
       end
     end
   end
@@ -68,6 +74,10 @@ describe Noodnik::NagsHelper do
 
     it "should have class 'postpone-link'" do
       @link.should include("postpone-link")
+    end
+
+    it "does not mark postpone links with 'data_noodnik_topic'" do
+      @link.should_not include("data_noodnik_topic")
     end
   end
 end
