@@ -2,15 +2,15 @@
 
 This gem is a simple solution that allows you to remind your users to do things such as update their profiles, complete surveys or try a new feature. You can easily add links for postponing these reminders.
 
-## Installation
-
-## Examples
+## Installation (wip)
 
 1. In your Gemfile, add this line: ```gem 'noodnik'```
 2. ```$ bundle install```
 3. ```$ rake noodnik:install:migrations```
 4. ```$ rake db:migrate```
 5. Add noodnik.rb in your initializers directory (TODO!)
+
+## Examples
 
 ### A Quick Nagging Example
 
