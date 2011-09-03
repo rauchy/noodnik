@@ -49,6 +49,20 @@ describe Noodnik::NagsHelper do
     end
   end
 
+  describe "link_to" do
+    it "adds 'data-noodnik-topic' with the correct topic when no html_options provided" do
+      link = nag_user_to :register do
+        link_to 'google.com', 'www.google.com'
+      end.should include('data-noodnik-topic="register"')
+    end
+
+    it "adds 'data-noodnik-topic' with the correct topic to existing html_options" do
+      link = nag_user_to :register do
+        link_to 'google.com', 'www.google.com', class: 'foo'
+      end.should include('data-noodnik-topic="register"')
+    end
+  end
+
   describe "postpone_for" do
     before :each do
       @link = nag_user_to :register do
@@ -77,7 +91,7 @@ describe Noodnik::NagsHelper do
     end
 
     it "does not mark postpone links with 'data_noodnik_topic'" do
-      @link.should_not include("data_noodnik_topic")
+      @link.should_not include("data-noodnik-topic")
     end
   end
 end

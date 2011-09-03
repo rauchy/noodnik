@@ -29,7 +29,7 @@ module Noodnik
 		def my_custom_link_to(*args)
 			has_options = args.last.is_a? Hash
 			html_options = has_options ? args.last : {}
-			html_options["data_noodnik_topic"] = @noodnik_topic
+			html_options["data-noodnik-topic"] = @noodnik_topic
 			args << html_options unless has_options
 			original_link_to *args
 		end
