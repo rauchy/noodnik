@@ -4,6 +4,8 @@ class CreateNoodnikNags < ActiveRecord::Migration
       t.integer :id
       t.datetime :next_nag
       t.boolean :completed
+			t.integer :user_id
+			t.string :topic
 
       t.timestamps
     end
