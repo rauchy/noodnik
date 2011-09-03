@@ -46,20 +46,49 @@ describe Noodnik::NagsHelper do
           "Register!"
         end.should include("Register!")
       end
+
+      it "should not yield the block if completed" do
+        Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 10.weeks.ago, completed: true
+
+        helper.nag_user_to :register do |nag|
+          "I should not be returned!"
+        end.should be_nil
+      end
+
     end
   end
 
   describe "link_to" do
-    it "adds 'data-noodnik-topic' with the correct topic when no html_options provided" do
-      link = nag_user_to :register do
-        link_to 'google.com', 'www.google.com'
-      end.should include('data-noodnik-topic="register"')
+    describe "with html_options provided" do
+      before :each do
+        @link = nag_user_to :register do
+           link_to 'google.com', 'www.google.com', class: 'foo'
+        end     
+      end
+
+      it "adds 'data-noodnik-topic' with the correct topic" do
+        @link.should include('data-noodnik-topic="register"')
+      end
+
+      it "adds class 'noodnik-complete'" do
+        @link.should include("class=\"foo noodnik-complete\"")
+      end
     end
 
-    it "adds 'data-noodnik-topic' with the correct topic to existing html_options" do
-      link = nag_user_to :register do
-        link_to 'google.com', 'www.google.com', class: 'foo'
-      end.should include('data-noodnik-topic="register"')
+    describe "with no html_options provided" do
+      before :each do
+        @link = nag_user_to :register do
+          link_to 'google.com', 'www.google.com'
+        end      
+      end
+
+      it "adds 'data-noodnik-topic' with the correct topic when no html_options provided" do
+        @link.should include('data-noodnik-topic="register"')
+      end
+
+      it "adds class 'noodnik-complete'" do
+        @link.should include("class=\"noodnik-complete\"")
+      end
     end
   end
 
@@ -86,12 +115,16 @@ describe Noodnik::NagsHelper do
       @link.should include("topic=register")
     end
 
-    it "should have class 'postpone-link'" do
-      @link.should include("postpone-link")
+    it "should have class 'noodnik-postpone'" do
+      @link.should include("noodnik-postpone")
     end
 
-    it "does not mark postpone links with 'data_noodnik_topic'" do
-      @link.should_not include("data-noodnik-topic")
+    it "does not add class 'noodnik-complete'" do
+      @link.should_not include("noodnik-complete")
+    end
+
+    it "does not mark postpone links with 'data_noodnik_complete-path'" do
+      @link.should_not include("data-noodnik-complete-path=\"/noodnik/complete/register\"")
     end
   end
 end

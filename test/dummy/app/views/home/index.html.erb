@@ -1,9 +1,6 @@
-<%= @noodnik_topic %>
-<%= nag_user_to :do_something_for_a_change do %>
-  plain text: hello! <br />
-  variable: <%= @noodnik_topic %> <br />
-  <p>postpone_for: <%= postpone_for 15.seconds %></p> <br />
-link_to: <%= link_to 'Google', 'www.google.com' %> <br />
+<% topic = params[:topic] %>
+<%= nag_user_to topic do %>
+  Don't forget to <%= link_to topic, 'http://www.github.com' %>
+  <p>(<strong><%= postpone_for 5.seconds %></strong>)</p> <br />
 <% end %>
-<%= @noodnik_topic %>
-<%= link_to  'Just a normal link', 'www.cnet.com' %>
+<%= link_to  'This should always appear', 'http://www.google.com' %>
