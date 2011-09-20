@@ -52,74 +52,74 @@ describe Noodnik::NagsHelper do
     end
 
   end
-end
 
-describe "link_to" do
-  describe "with html_options provided" do
+  describe "link_to" do
+    describe "with html_options provided" do
+      before :each do
+        @link = nag_user_to :register do
+          link_to 'google.com', 'www.google.com', class: 'foo'
+        end     
+      end
+
+      it "adds 'data-noodnik-complete-path' with the correct topic" do
+        @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
+      end
+
+      it "adds class 'noodnik-complete'" do
+        @link.should include("class=\"foo noodnik-complete\"")
+      end
+    end
+
+    describe "with no html_options provided" do
+      before :each do
+        @link = nag_user_to :register do
+          link_to 'google.com', 'www.google.com'
+        end      
+      end
+
+      it "adds 'data-noodnik-complete-path' with the correct topic when no html_options provided" do
+        @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
+      end
+
+      it "adds class 'noodnik-complete'" do
+        @link.should include("class=\"noodnik-complete\"")
+      end
+    end
+  end
+
+  describe "postpone_for" do
     before :each do
       @link = nag_user_to :register do
-        link_to 'google.com', 'www.google.com', class: 'foo'
-      end     
+        postpone_for 14.days
+      end
     end
 
-    it "adds 'data-noodnik-complete-path' with the correct topic" do
-      @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
+    it "prompts a default message of 'Remind me in 14 days'" do
+      @link.should include('Remind me in 14 days')
     end
 
-    it "adds class 'noodnik-complete'" do
-      @link.should include("class=\"foo noodnik-complete\"")
-    end
-  end
-
-  describe "with no html_options provided" do
-    before :each do
-      @link = nag_user_to :register do
-        link_to 'google.com', 'www.google.com'
-      end      
+    it "links to /noodnik/postpone" do
+      @link.should include('/noodnik/postpone')
     end
 
-    it "adds 'data-noodnik-complete-path' with the correct topic when no html_options provided" do
-      @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
+    it "specifies the correct period in the link" do
+      @link.should include("period=#{14.days}")
     end
 
-    it "adds class 'noodnik-complete'" do
-      @link.should include("class=\"noodnik-complete\"")
+    it "specifies the correct topic" do
+      @link.should include("topic=register")
     end
-  end
-end
 
-describe "postpone_for" do
-  before :each do
-    @link = nag_user_to :register do
-      postpone_for 14.days
+    it "should have class 'noodnik-postpone'" do
+      @link.should include("noodnik-postpone")
     end
-  end
 
-  it "prompts a default message of 'Remind me in 14 days'" do
-    @link.should include('Remind me in 14 days')
-  end
+    it "does not add class 'noodnik-complete'" do
+      @link.should_not include("noodnik-complete")
+    end
 
-  it "links to /noodnik/postpone" do
-    @link.should include('/noodnik/postpone')
-  end
-
-  it "specifies the correct period in the link" do
-    @link.should include("period=#{14.days}")
-  end
-
-  it "specifies the correct topic" do
-    @link.should include("topic=register")
-  end
-
-  it "should have class 'noodnik-postpone'" do
-    @link.should include("noodnik-postpone")
-  end
-
-  it "does not add class 'noodnik-complete'" do
-    @link.should_not include("noodnik-complete")
-  end
-
-  it "does not mark postpone links with 'data_noodnik_complete-path'" do
-    @link.should_not include("data-noodnik-complete-path=\"/noodnik/complete/register\"")
+    it "does not mark postpone links with 'data_noodnik_complete-path'" do
+      @link.should_not include("data-noodnik-complete-path=\"/noodnik/complete/register\"")
+    end
   end
 end
