@@ -5,50 +5,97 @@ describe Noodnik::NagsHelper do
   describe "nag_user_to" do
     before :each do
       @topic = :register
-      @user_id = 1
-      Noodnik.setup do |config|
-        config.current_user_id = lambda { @user_id }
+    end
+
+    describe "when signed in" do
+      before :each do
+        @user_id = 1
+        set_current_user_id(@user_id)
+      end
+
+      after :each do
+        Noodnik::Nag.delete_all
+      end
+
+      it "yields the block in a div with class 'noodnik-nag'" do
+        helper.nag_user_to :register do |nag|
+          "I should be in a <div>!"
+        end.should match(%r[<div class="noodnik-nag">.*</div>])
+      end
+
+      it "yields the block for a new topic" do
+        helper.nag_user_to :register do |nag|
+          "Register!"
+        end.should include("Register!")
+      end
+
+      it "does not yield the block if topic has been postponed" do
+        Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 2.weeks.from_now
+
+        helper.nag_user_to :register do |nag|
+          "I should not be returned!"
+        end.should be_nil
+      end
+
+      it "yields the block if postpone expired" do
+        Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 1.week.ago
+
+        helper.nag_user_to :register do |nag|
+          "Register!"
+        end.should include("Register!")
+      end
+
+      it "does not yield the block if topic was completed" do
+        Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 10.weeks.ago, completed: true
+
+        helper.nag_user_to :register do |nag|
+          "I should not be returned!"
+        end.should be_nil
       end
     end
 
-    after :each do
-      Noodnik::Nag.delete_all
-    end
+    describe "when not signed in" do
+      before :each do
+        set_current_user_id(nil)
+        @cookies = mock('cookies')
+        controller.stub!(:cookies).and_return(@cookies)
+      end
 
-    it "yields the block in a div with class 'noodnik-nag'" do
-      helper.nag_user_to :register do |nag|
-        "I should be in a <div>!"
-      end.should match(%r[<div class="noodnik-nag">.*</div>])
-    end
+      it "yields the block in a div with class 'noodnik-nag'" do
+        helper.nag_user_to :register do |nag|
+          "I should be in a <div>!"
+        end.should match(%r[<div class="noodnik-nag">.*</div>])
+      end
 
-    it "should yield the block for a new topic" do
-      helper.nag_user_to :register do |nag|
-        "Register!"
-      end.should include("Register!")
-    end
+      it "yields the block for a new topic" do
+        helper.nag_user_to :register do |nag|
+          "Register!"
+        end.should include("Register!")
+      end
 
-    it "should not yield the block if postponed" do
-      Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 2.weeks.from_now
+      it "does not yield the block if topic has been postponed" do
+#        Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 2.weeks.from_now
 
-      helper.nag_user_to :register do |nag|
-        "I should not be returned!"
-      end.should be_nil
-    end
+        helper.nag_user_to :register do |nag|
+          "I should not be returned!"
+        end.should be_nil
+      end
 
-    it "should yield the block if postpone expired" do
-      Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 1.week.ago
+      it "yields the block if postpone expired" do
+ #       Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 1.week.ago
 
-      helper.nag_user_to :register do |nag|
-        "Register!"
-      end.should include("Register!")
-    end
+        helper.nag_user_to :register do |nag|
+          "Register!"
+        end.should include("Register!")
+      end
 
-    it "should not yield the block if completed" do
-      Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 10.weeks.ago, completed: true
+      it "does not yield the block if topic was completed" do
+  #      Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 10.weeks.ago, completed: true
 
-      helper.nag_user_to :register do |nag|
-        "I should not be returned!"
-      end.should be_nil
+        helper.nag_user_to :register do |nag|
+          "I should not be returned!"
+        end.should be_nil
+      end
     end
 
   end
@@ -77,7 +124,7 @@ describe Noodnik::NagsHelper do
         end      
       end
 
-      it "adds 'data-noodnik-complete-path' with the correct topic when no html_options provided" do
+      it "adds 'data-noodnik-complete-path' with the correct topic" do
         @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
       end
 
@@ -110,10 +157,11 @@ describe Noodnik::NagsHelper do
       @link.should include("topic=register")
     end
 
-    it "should have class 'noodnik-postpone'" do
+    it "has class 'noodnik-postpone'" do
       @link.should include("noodnik-postpone")
     end
 
+    # postpone_for is the only type of link inside a nag_user_to block that *should'nt* get class 'noodnik-complete'
     it "does not add class 'noodnik-complete'" do
       @link.should_not include("noodnik-complete")
     end

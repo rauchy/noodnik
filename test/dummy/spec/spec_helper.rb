@@ -1,6 +1,13 @@
 require 'rubygems'
 require 'spork'
 
+
+def set_current_user_id(user_id)
+  Noodnik.setup do |config|
+    config.current_user_id = lambda { user_id }
+  end
+end
+
 Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
   # if you change any configuration or code from libraries loaded here, you'll

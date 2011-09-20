@@ -108,12 +108,6 @@ describe Noodnik::NagsController do
     end
   end
 
-  def set_current_user_id(user_id)
-    Noodnik.setup do |config|
-      config.current_user_id = lambda { user_id }
-    end
-  end
-
   def stub_time
     t = Time.parse("01/01/2010 10:00")
     Time.stub!(:now).and_return(t)
