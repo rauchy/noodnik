@@ -66,8 +66,8 @@ describe Noodnik::NagsHelper do
         end     
       end
 
-      it "adds 'data-noodnik-topic' with the correct topic" do
-        @link.should include('data-noodnik-topic="register"')
+      it "adds 'data-noodnik-complete-path' with the correct topic" do
+        @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
       end
 
       it "adds class 'noodnik-complete'" do
@@ -82,8 +82,8 @@ describe Noodnik::NagsHelper do
         end      
       end
 
-      it "adds 'data-noodnik-topic' with the correct topic when no html_options provided" do
-        @link.should include('data-noodnik-topic="register"')
+      it "adds 'data-noodnik-complete-path' with the correct topic when no html_options provided" do
+        @link.should include('data-noodnik-complete-path="/noodnik/complete?topic=register"')
       end
 
       it "adds class 'noodnik-complete'" do
