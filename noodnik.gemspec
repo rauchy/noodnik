@@ -9,5 +9,5 @@ Gem::Specification.new do |s|
   s.description = "A simple Rails solution for reminding users to do stuff."
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
-  s.version = "0.1.1"
+  s.version = "0.2.0"
 end
