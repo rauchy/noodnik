@@ -76,14 +76,14 @@ describe Noodnik::NagsHelper do
       end
 
       it "does not yield the block if topic has been postponed" do
-        @cookies.should_receive(:[]).with(:register).and_return(2.weeks.from_now)
+        @cookies.should_receive(:[]).with(:register).and_return(2.weeks.from_now.to_s)
         helper.nag_user_to :register do |nag|
           "I should not be returned!"
         end.should be_nil
       end
 
       it "yields the block if postpone expired" do
-        @cookies.should_receive(:[]).with(:register).and_return(2.weeks.ago)
+        @cookies.should_receive(:[]).with(:register).and_return(2.weeks.ago.to_s)
 
         helper.nag_user_to :register do |nag|
           "Register!"

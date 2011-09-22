@@ -5,9 +5,9 @@ module Noodnik
 			topic = params[:topic]
 
 			if user_id.present?
-				nag = find_or_create_nag(topic)
-				nag.next_nag = next_nag
-				nag.save
+				find_or_create_nag(topic).tap do |nag|
+					nag.next_nag = next_nag
+				end.save
 			else
 				cookies[topic] = next_nag.to_s
 			end

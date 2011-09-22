@@ -4,13 +4,9 @@ class CookieNag
 	end
 
 	def due?
-		case @next_nag
-		when NilClass
-			true
-		when ActiveSupport::TimeWithZone
-			@next_nag < Time.now
-		when String
-			@next_nag != 'complete'
-		end
+		return false if @next_nag == 'complete'
+	  time = ActiveSupport::TimeZone['UTC'].parse(@next_nag.to_s)
+		return true if time.nil?
+		time < Time.now
 	end
 end
