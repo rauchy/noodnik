@@ -3,6 +3,7 @@ module Noodnik
 		def nag_user_to(topic, &block)
 			nag = find_nag(topic)
 			return if nag && !nag.due?
+
 			begin
 				alias_methods
 				yield_block(topic, &block)
@@ -20,7 +21,7 @@ module Noodnik
 				attr = { user_id: user_id, topic: topic }
 				Nag.find :first, conditions: attr	
 			else
-				CookieNag.new
+				CookieNag.new(topic, cookies)
 			end
 		end
 

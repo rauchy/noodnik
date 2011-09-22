@@ -1,5 +1,5 @@
 module Noodnik
-  class Nag < ActiveRecord::Base
+	class Nag < ActiveRecord::Base
 		def due?
 			!(postponed? || completed?)
 		end
@@ -8,12 +8,6 @@ module Noodnik
 
 		def postponed?
 			next_nag > Time.now
-		end
-  end
-
-	class CookieNag
-		def due?
-			true
 		end
 	end
 end

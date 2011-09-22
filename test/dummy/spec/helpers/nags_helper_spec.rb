@@ -58,31 +58,32 @@ describe Noodnik::NagsHelper do
       before :each do
         set_current_user_id(nil)
         @cookies = mock('cookies')
-        controller.stub!(:cookies).and_return(@cookies)
+        helper.stub!(:cookies).and_return(@cookies)
       end
 
       it "yields the block in a div with class 'noodnik-nag'" do
+        @cookies.should_receive(:[]).with(:register).and_return(nil)
         helper.nag_user_to :register do |nag|
           "I should be in a <div>!"
         end.should match(%r[<div class="noodnik-nag">.*</div>])
       end
 
       it "yields the block for a new topic" do
+        @cookies.should_receive(:[]).with(:register).and_return(nil)
         helper.nag_user_to :register do |nag|
           "Register!"
         end.should include("Register!")
       end
 
       it "does not yield the block if topic has been postponed" do
-#        Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 2.weeks.from_now
-
+        @cookies.should_receive(:[]).with(:register).and_return(2.weeks.from_now)
         helper.nag_user_to :register do |nag|
           "I should not be returned!"
         end.should be_nil
       end
 
       it "yields the block if postpone expired" do
- #       Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 1.week.ago
+        @cookies.should_receive(:[]).with(:register).and_return(2.weeks.ago)
 
         helper.nag_user_to :register do |nag|
           "Register!"
@@ -90,7 +91,7 @@ describe Noodnik::NagsHelper do
       end
 
       it "does not yield the block if topic was completed" do
-  #      Noodnik::Nag.create! user_id: @user_id, topic: @topic, next_nag: 10.weeks.ago, completed: true
+        @cookies.should_receive(:[]).with(:register).and_return('complete')
 
         helper.nag_user_to :register do |nag|
           "I should not be returned!"

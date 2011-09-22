@@ -22,7 +22,6 @@ group :test, :development do
   gem 'guard-spork'
 	gem 'rb-inotify'
 	gem 'libnotify'
-  gem 'database_cleaner'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'spork', '~> 0.9.0.rc'
