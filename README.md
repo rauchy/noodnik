@@ -2,7 +2,9 @@
 
 This gem is a simple solution that allows you to remind your users to do things such as update their profiles, complete surveys or try a new feature. You can easily add links for postponing these reminders.
 
-## Installation (wip)
+For users that are signed in, these reminders are saved in the database. For users that are not signed in, the reminders are saved in temporary cookies that can be migrated to the database once users sign up.
+
+## Installation
 
 1. In your Gemfile, add this line: ```gem 'noodnik'```
 2. ```$ bundle install```
@@ -25,7 +27,7 @@ This will render the following HTML:
       You still need to <a href="/profiles/update" class="noodnik-complete" data-noodnik-complete-path="/noodnik/complete?topic=update_profile">update your profile</a>!
     </div>
 
-- Clicking on "**update your profile**" will stop the message from appearing the next time the user views the page.
+- Clicking on "**update your profile**" will prevent this message from ever appearing again for the current user.
 
 ### Postponing Nags
 
