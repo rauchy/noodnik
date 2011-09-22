@@ -9,7 +9,7 @@ module Noodnik
 					nag.next_nag = next_nag
 				end.save
 			else
-				cookies[topic] = next_nag.to_s
+				cookies["noodnik_#{topic}"] = next_nag.to_s
 			end
 
 			render :nothing => true
@@ -23,7 +23,7 @@ module Noodnik
 				nag.completed = true
 				nag.save
 			else
-				cookies.delete topic
+				cookies.delete "noodnik_#{topic}"
 			end
 
 			render :nothing => true

@@ -32,7 +32,7 @@ describe Noodnik::NagsController do
       end
 
       it "sets the provided topic as the cookie name" do
-        @cookies.should_receive(:[]=).with(@topic.to_s, anything)
+        @cookies.should_receive(:[]=).with("noodnik_#{@topic}", anything)
         get :postpone, @attr
       end
 
@@ -44,7 +44,7 @@ describe Noodnik::NagsController do
 
     describe "GET 'complete'" do
       it "removes the nag cookie" do
-        @cookies.should_receive(:delete).with(@topic.to_s)
+        @cookies.should_receive(:delete).with("noodnik_#{@topic}")
         get :complete, @attr
       end
     end
